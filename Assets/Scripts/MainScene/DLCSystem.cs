@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 public static class ButtonExtension
 {
@@ -27,37 +28,45 @@ public class DLCSystem : MonoBehaviour
     public Button prefab;
     public Text labelText;
 
-    AssetBundle assetBundle;
+    private static Dictionary<string, AssetBundle> assetBundlesMap = new Dictionary<string, AssetBundle>();
 
     IEnumerator Start()
     {
-        using (UnityWebRequest req = UnityWebRequestAssetBundle.GetAssetBundle(url))
+        if (!assetBundlesMap.ContainsKey(url))
         {
-            yield return req.Send();
-
-            if (req.isNetworkError)
+            using (UnityWebRequest req = UnityWebRequestAssetBundle.GetAssetBundle(url))
             {
-                Debug.LogError(req.error);
-            }
-            else
-            {
-                assetBundle = ((DownloadHandlerAssetBundle)req.downloadHandler).assetBundle;
-                string[] scenes = assetBundle.GetAllScenePaths();
+                yield return req.Send();
 
-                foreach (string sceneName in scenes)
+                if (req.isNetworkError)
                 {
-                    string prettySceneName = Path.GetFileNameWithoutExtension(sceneName);
-
-                    labelText.text = prettySceneName;
-                    var clone = Instantiate(prefab.gameObject) as GameObject;
-
-                    clone.GetComponent<Button>().AddEventListener(sceneName, GoToScene);
-
-                    clone.SetActive(true);
-                    clone.transform.SetParent(rootContainer);
-
+                    Debug.LogError(req.error);
+                }
+                else
+                {
+                    assetBundlesMap[url] = ((DownloadHandlerAssetBundle)req.downloadHandler).assetBundle;
                 }
             }
+        }
+        // Load Scenes Buttons
+        AssetBundle assetBundle = assetBundlesMap[url];
+        makeProjectButtons(assetBundle.GetAllScenePaths());
+    }
+
+    private void makeProjectButtons(string [] scenes)
+    {
+        foreach (string sceneName in scenes)
+        {
+            string prettySceneName = Path.GetFileNameWithoutExtension(sceneName);
+
+            labelText.text = prettySceneName;
+            var clone = Instantiate(prefab.gameObject) as GameObject;
+
+            clone.GetComponent<Button>().AddEventListener(sceneName, GoToScene);
+
+            clone.SetActive(true);
+            clone.transform.SetParent(rootContainer);
+
         }
     }
 

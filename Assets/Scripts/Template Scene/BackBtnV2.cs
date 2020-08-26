@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class BackBtn : MonoBehaviour
+public class BackBtnV2 : MonoBehaviour
 {
     private const string MAIN_SCENE = "MainScene";
     public void onBackBtnClick()
