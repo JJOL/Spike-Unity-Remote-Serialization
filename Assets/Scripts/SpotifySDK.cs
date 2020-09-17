@@ -11,15 +11,28 @@ public class SpotifySDK : MonoBehaviour
 
     void Start()
     {
+
+        Debug.Log("Testing SpotifyWebAPI Client...");
+
         _spotify = new SpotifyWebAPI()
-    {
-        AccessToken = "BQDYUD7CcvAFskTY_YmC8UqHJTQAwBOUn81wxHuoInRTXm4k8bHyc7lpPGx9UeKedn7bs56sqebgZezIp5o",
-        TokenType = "Bearer"
-    };
-    AudioAnalysis  analysis  = _spotify.GetAudioAnalysis("3Hvu1pq89D4R0lyPBoujSv");
-  
-    Debug.Log(analysis.Bars.Count.ToString()); //Yeay! We just printed a tracks name.
-    Debug.Log(analysis.Beats.Count.ToString()); //Yeay! We just printed a tracks name.
+        {
+            AccessToken = "BQCbA3-36RXsmkIW9OHVoCjRHrYyCIqTxIQR9E_If3NPw_McHQaFykPSOOEdDa5wjX-9dKIrdZ6SFwD3PDg",
+            TokenType = "Bearer"
+        };
+        Debug.Log("SpotifyWebInstance() successfully created and connected!");
+
+        AudioAnalysis analysis  = _spotify.GetAudioAnalysis("3Hvu1pq89D4R0lyPBoujSv");
+        if (analysis == null || analysis.Bars == null)
+        {
+            Debug.Log("NO AnalysisResults RETURNED!");
+            return;
+        }
+        Debug.Log("AnalysisResults succesfully loaded!");
+
+        Debug.Log("Bars: " + analysis.Bars.Count.ToString()); //Yeay! We just printed a tracks name.
+        Debug.Log("Beats: " + analysis.Beats.Count.ToString()); //Yeay! We just printed a tracks name.
+
+        Debug.Log("Prueba Concluida con Exito!!");
     }
 
     // Update is called once per frame

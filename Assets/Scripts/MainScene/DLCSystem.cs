@@ -6,6 +6,7 @@ using System.IO;
 using System;
 using UnityEngine.Networking;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 public static class ButtonExtension
 {
